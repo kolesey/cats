@@ -7,6 +7,9 @@ import json
 FOLDER = 'PD-137'
 text = input('Введите текст: ')
 
+if text == '':
+    print('Вы не ввели текст')
+    text = input('Введите текст: ')
 # Создаем кота с подписью
 try:
     cat = Cats(text)
