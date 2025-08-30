@@ -1,3 +1,4 @@
+import json
 import requests
 
 class Cats:
@@ -28,7 +29,7 @@ class Cats:
         :return: размер созданного изображения в байтах
         """
         response = requests.get(self.get_cat_url())
-        return response.headers['Content-Length']
+        return response.headers.get('Content-Length')
 
     def get_cat_url(self):
         """
@@ -76,6 +77,29 @@ class YaDisk:
             return True
         else:
             return False
+
+
+    def save_file_info(self, disk_path, output_file):
+        """
+        Метод записывает информацию по запрашиваемому на яндекс диске файлу
+        :param disk_path: путь к файлу на яндекс диске
+        :param output_file: имя файла для записи результата
+        :return: HTTP код ответа Яндекс Диска
+        """
+        params = {
+            'path': disk_path
+        }
+
+        response = requests.get(self.YD_URL, params=params, headers=self.headers)
+
+        if response.status_code == 200:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(response.json(), f)
+                f.flush()
+            return response.status_code
+        else:
+            return response.status_code
+
 
 
     def create_folder(self, folder_name):

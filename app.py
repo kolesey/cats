@@ -1,5 +1,5 @@
 import sys
-from operator import truediv
+import time
 
 from classes import Cats
 from classes import YaDisk
@@ -87,6 +87,27 @@ while True:
     except requests.Timeout:
         print(f'Превышено время ожидания ответа от Яндекс Диска')
         break
+
+
+    # Загружаем информацию о файле к себе на диск
+    try:
+        # Делаем задержку, потому что яндекс бывает не успевает дать ответ по только что загруженному файлу
+        time.sleep(2)
+        resp = disk.save_file_info(filename, f'{text}.json')
+        if resp != 200:
+            print(f'Ошибка при получении информации о файле {filename} с Яндекс Диска. HTTP код: {resp}')
+            break
+        else:
+            print(f'Информация о загруженном файле сохранена локально в файл: {text}.json')
+    except requests.ConnectionError:
+        print('Нет связи с Яндекс Диском')
+        break
+    except requests.Timeout:
+        print(f'Превышено время ожидания ответа от Яндекс Диска')
+        break
+
+
+    # Задаем вопрос о продолжении работы программы
     question = input('Продолжаем? y/n: ')
     if question == 'y':
         continue
